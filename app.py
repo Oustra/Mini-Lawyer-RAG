@@ -11,7 +11,7 @@ st.title("Mini Lawyer - French Law")
 
 # --- Load embeddings & vector DB ---
 # embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-m3") # dynamic data
-embedding_model = FakeEmbeddings()
+embedding_model = FakeEmbeddings(size=1024)
 db = Chroma(persist_directory="chroma_db", embedding_function=embedding_model)
 retriever = db.as_retriever(search_kwargs={"k": 3})
 
@@ -19,7 +19,7 @@ retriever = db.as_retriever(search_kwargs={"k": 3})
 def ask_mistral_openrouter(prompt):
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "Content-Type": "application/json"
     }
     data = {
