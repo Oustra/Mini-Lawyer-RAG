@@ -1,6 +1,6 @@
-import streamlit as st
-import requests
 import json
+import requests
+import streamlit as st
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA

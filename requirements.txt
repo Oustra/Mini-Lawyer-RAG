@@ -4,6 +4,4 @@ langchain
 langchain-community
 langchain-chroma
 chromadb
-transformers
 sentence-transformers
-torch
