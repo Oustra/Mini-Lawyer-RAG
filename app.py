@@ -10,7 +10,7 @@ st.title("Mini Lawyer - French Law")
 
 # --- Load embeddings & vector DB ---
 embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
-db = Chroma(persist_directory="chroma_db", embedding_function=embedding_model)
+db = Chroma(persist_directory=None, embedding_function=embedding_model)
 retriever = db.as_retriever(search_kwargs={"k": 3})
 
 # --- Function to call OpenRouter API ---
