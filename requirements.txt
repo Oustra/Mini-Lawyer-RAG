@@ -6,3 +6,4 @@ langchain-chroma
 chromadb
 sentence-transformers
 python-dotenv
+fastapi
