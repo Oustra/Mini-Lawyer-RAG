@@ -1,12 +1,18 @@
+import os
 import json
 import requests
 import streamlit as st
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
+from dotenv import load_dotenv
 
 st.set_page_config(page_title="Mini Lawyer", page_icon="⚖️")
 st.title("Mini Lawyer - French Law")
+load_dotenv(dotenv_path="api.env")
+
+# Access your API key
+api_key = os.getenv("OPENROUTER_API_KEY")
 
 # --- Load embeddings & vector DB ---
 #embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
@@ -20,7 +26,7 @@ retriever = db.as_retriever(search_kwargs={"k": 3})
 def ask_mistral_openrouter(prompt):
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
-        "Authorization": "Bearer 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",
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
     data = {
