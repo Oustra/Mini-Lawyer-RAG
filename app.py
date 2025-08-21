@@ -2,7 +2,6 @@ import json
 import requests
 import streamlit as st
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.embeddings import FakeEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 
@@ -10,8 +9,10 @@ st.set_page_config(page_title="Mini Lawyer", page_icon="⚖️")
 st.title("Mini Lawyer - French Law")
 
 # --- Load embeddings & vector DB ---
-# embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-m3") # dynamic data
-embedding_model = FakeEmbeddings(size=1024)
+#embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
+embedding_model = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+)
 db = Chroma(persist_directory="chroma_db", embedding_function=embedding_model)
 retriever = db.as_retriever(search_kwargs={"k": 3})
 
@@ -19,7 +20,7 @@ retriever = db.as_retriever(search_kwargs={"k": 3})
 def ask_mistral_openrouter(prompt):
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "Content-Type": "application/json"
     }
     data = {
@@ -59,8 +60,11 @@ if prompt := st.chat_input("Type your legal question here..."):
 
     # Build prompt for Mistral
     mistral_prompt = f"""
-    You are a French law assistant. Answer the user’s question **using ONLY the information in the documents provided below**.
-    If the answer cannot be found in the documents, reply: "I could not find the answer in the sources."
+    You are a French law assistant. 
+    Answer the user’s question using ONLY the documents provided below.
+    - If the documents are in a different language than the question, translate them into the question's language before answering.
+    - If the answer cannot be found in the documents, respond: "I could not find the answer in the sources."
+    - Keep your answer concise, clear, and professional.
 
     Documents:
     {context}
@@ -68,7 +72,7 @@ if prompt := st.chat_input("Type your legal question here..."):
     Question:
     {prompt}
 
-    Answer concisely and clearly.
+    Answer:
     """
 
     # Call Mistral

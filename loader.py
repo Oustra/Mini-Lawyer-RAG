@@ -6,7 +6,7 @@ import pickle
 
 # --- Load French PDFs ---
 loader_fr_pdf = DirectoryLoader(
-    "data/fr",
+    "data",
     glob="**/*.pdf",
     loader_cls=PyPDFLoader
 )
@@ -19,7 +19,9 @@ splits = text_splitter.split_documents(documents)
 print(f"Split into {len(splits)} chunks")
 
 # --- Multilingual Embeddings (optimized for RAG) ---
-embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
+embedding_model = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+)
 
 # Optional: save the raw splits for faster reruns
 with open("embeddings/splits.pkl", "wb") as f:
@@ -34,6 +36,4 @@ for i, chunk in enumerate(splits, 1):
     if i % 50 == 0 or i == len(splits):  # Print progress every 50 chunks
         print(f"Embedded & stored {i}/{len(splits)} chunks")
 
-# Persist DB to disk
-db.persist()
 print("All documents embedded & stored in ChromaDB successfully!")
